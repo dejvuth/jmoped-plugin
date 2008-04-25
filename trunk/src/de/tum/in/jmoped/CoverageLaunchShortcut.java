@@ -1,5 +1,7 @@
 package de.tum.in.jmoped;
 
+import java.io.File;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IFile;
@@ -9,8 +11,10 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
@@ -136,9 +140,12 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			
 			// Creates translator
 			String className = method.getDeclaringType().getFullyQualifiedName().replace('.', '/');
+			URL liburl = FileLocator.find(
+					Platform.getBundle(Activator.PLUGIN_ID), 
+					new Path("lib" + File.separator + "translator.jar"), null);
 			translator = new Translator(
 					className,
-					new String[] { location, location + "/bin" },
+					new String[] { location, location + "/bin", FileLocator.resolve(liburl).toURI().getRawPath() },
 					method.isConstructor() ? "<init>" : method.getElementName(),
 					method.getSignature());
 			
