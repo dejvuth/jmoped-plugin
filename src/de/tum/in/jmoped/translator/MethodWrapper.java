@@ -16,6 +16,7 @@ import de.tum.in.jmoped.annotation.AnnotationUtils;
 import de.tum.in.jmoped.underbone.ExprSemiring.CompType;
 import de.tum.in.jmoped.underbone.ExprSemiring;
 import de.tum.in.jmoped.underbone.ExprType;
+import de.tum.in.jmoped.underbone.LabelUtils;
 import de.tum.in.jmoped.underbone.Module;
 
 import static de.tum.in.jmoped.underbone.ExprType.*;
@@ -74,7 +75,7 @@ public class MethodWrapper {
 		ClassFile cf = translator.getClassTranslator(className).getClassFile();
 		mi = cf.getMethod(methodName, methodDesc);
 		if (mi == null) {
-			List<String> params = TranslatorUtils.getParamTypes(methodDesc);
+			List<String> params = LabelUtils.getParamTypes(methodDesc);
 			MethodInfo[] methods = cf.getMethods();
 			for (int i = 0; i < methods.length; i++) {
 				
@@ -83,7 +84,7 @@ public class MethodWrapper {
 					continue;
 				
 				// Continues if descriptors not matched
-				List<String> candidates = TranslatorUtils.getParamTypes(
+				List<String> candidates = LabelUtils.getParamTypes(
 						methods[i].getDescriptor());
 				if (!TranslatorUtils.matchParams(candidates, params))
 					continue;
@@ -194,7 +195,7 @@ public class MethodWrapper {
 		ElementValue[] annotatedBits = AnnotationUtils.getAnnotatedBits(mi);
 		ElementValue[] annotatedRange = AnnotationUtils.getAnnotatedRange(mi);
 		CPInfo[] cp = cf.getConstantPool();
-		paramTypes = TranslatorUtils.getParamTypes(methodDesc);
+		paramTypes = LabelUtils.getParamTypes(methodDesc);
 		int i = -1;
 		String paramName;
 		Integer[] minmax;

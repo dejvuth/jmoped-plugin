@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.logging.Logger;
 
-import de.tum.in.jmoped.translator.TranslatorUtils;
 import de.tum.in.jmoped.underbone.ExprSemiring.ArithType;
 import de.tum.in.jmoped.underbone.ExprSemiring.Condition;
 import de.tum.in.jmoped.underbone.ExprSemiring.DupType;
@@ -558,8 +557,8 @@ public class VirtualMachine {
 					 * The rest is for display only:
 					 * Subtasks with the arguments when the selected method is called
 					 */
-					String desc = TranslatorUtils.extractMethodDescriptorFromLabel(w[0]);
-					List<String> types = TranslatorUtils.getParamTypes(desc);
+					String desc = LabelUtils.extractMethodDescriptorFromLabel(w[0]);
+					List<String> types = LabelUtils.getParamTypes(desc);
 					List<String> display = new LinkedList<String>();
 					
 					j = (invoke.isStatic) ? 0 : 1;
@@ -826,7 +825,7 @@ public class VirtualMachine {
 		if (length > index) return false;
 		
 		log("\tArrayIndexOutOfBoundException%n");
-		String ioob = TranslatorUtils.formatIoobName(label);
+		String ioob = LabelUtils.formatIoobName(label);
 		if (listener != null) listener.reach(ioob);
 		error(ioob, raw, frames);
 		
@@ -839,7 +838,7 @@ public class VirtualMachine {
 		if (ptr != 0) return false;
 		
 		log("\tNullPointerException%n");
-		String npe = TranslatorUtils.formatNpeName(label);
+		String npe = LabelUtils.formatNpeName(label);
 		if (listener != null) listener.reach(npe);
 		error(npe, raw, frames);
 		

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 
-import de.tum.in.jmoped.translator.TranslatorUtils;
 import de.tum.in.jmoped.underbone.ExprSemiring.ArithType;
 import de.tum.in.jmoped.underbone.ExprSemiring.Condition;
 import de.tum.in.jmoped.underbone.ExprSemiring.DupType;
@@ -360,9 +359,9 @@ public class Module {
 			boolean toIterate = true;
 			
 			String label = rule.getLabel();
-			if (TranslatorUtils.isNpeName(label)
-					|| TranslatorUtils.isIoobName(label)
-					|| TranslatorUtils.isHeapOverflowName(label)) {
+			if (LabelUtils.isNpeName(label)
+					|| LabelUtils.isIoobName(label)
+					|| LabelUtils.isHeapOverflowName(label)) {
 				if (itr.hasNext()) rule = itr.next();
 				continue;
 			}
@@ -407,7 +406,7 @@ public class Module {
 			}
 			
 			if (s != null) {
-				if (TranslatorUtils.getOffset(label) == 0)
+				if (LabelUtils.getOffset(label) == 0)
 					Utils.append(out, "%s%n", s);
 				else
 					Utils.append(out, "%s: %s%n", Remopla.mopedize(label), s);
@@ -501,14 +500,14 @@ public class Module {
 	private static String ioob(String arrayref, String index) {
 		return String.format("\t:: (%s != 0 && %s >= %s) -> %s: goto %s;%n", 
 				arrayref, index, arraylength(arrayref), 
-				Remopla.mopedize(TranslatorUtils.formatIoobName(rule.getLabel())), 
+				Remopla.mopedize(LabelUtils.formatIoobName(rule.getLabel())), 
 				Remopla.ioob);
 	}
 	
 	private static String npe(String ref) {
 		return String.format("\t:: (%s == 0) -> %s: goto %s;%n", 
 				ref, 
-				Remopla.mopedize(TranslatorUtils.formatNpeName(rule.getLabel())), 
+				Remopla.mopedize(LabelUtils.formatNpeName(rule.getLabel())), 
 				Remopla.npe);
 	}
 	
@@ -851,7 +850,7 @@ public class Module {
 			if (!nehprinted) {
 				Utils.append(b, "\t :: (%s + %s + 1 > %d) -> %s: goto %s;%n", 
 						hptr, n.size, heapsize, 
-						Remopla.mopedize(TranslatorUtils.formatHeapOverflowName(rule.getLabel())),
+						Remopla.mopedize(LabelUtils.formatHeapOverflowName(rule.getLabel())),
 						Remopla.notenoughheap);
 				nehprinted = true;
 			}
@@ -881,7 +880,7 @@ public class Module {
 		Utils.append(b, "if%n");
 		Utils.append(b, "\t:: (%s + %s + 2 > %d) -> %s: goto %s;%n", 
 				hptr, s0(), heapsize, 
-				Remopla.mopedize(TranslatorUtils.formatHeapOverflowName(rule.getLabel())),
+				Remopla.mopedize(LabelUtils.formatHeapOverflowName(rule.getLabel())),
 				Remopla.notenoughheap);
 		Utils.append(b, "\t:: (%s + %s + 2 <= %d) -> %s[%s] = %d, %s[%s + 1] = %s, %s = %s + %s + 2, %s = %s, %s = 0;%n", 
 				hptr, s0(), heapsize, heap, hptr, newarray.types[0], heap, hptr, s0(), hptr, hptr, s0(), s0(), hptr, ret);

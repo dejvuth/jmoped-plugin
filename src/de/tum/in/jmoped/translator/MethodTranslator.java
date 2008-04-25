@@ -26,6 +26,7 @@ import de.tum.in.jmoped.translator.stub.StubManager;
 import de.tum.in.jmoped.underbone.ExprSemiring.CompType;
 import de.tum.in.jmoped.underbone.ExprSemiring.If;
 import de.tum.in.jmoped.underbone.ExprSemiring;
+import de.tum.in.jmoped.underbone.LabelUtils;
 import de.tum.in.jmoped.underbone.Remopla;
 import de.tum.in.jmoped.underbone.ExprSemiring.Condition;
 import de.tum.in.jmoped.underbone.ExprSemiring.Condition.ConditionType;
@@ -330,7 +331,7 @@ public class MethodTranslator implements ModuleMaker {
 				
 			case Opcodes.OPCODE_NEW:
 				if (d.type == ONE) {
-					String alabel = TranslatorUtils.formatAssertionName(nextLabel(i));
+					String alabel = LabelUtils.formatAssertionName(nextLabel(i));
 					module.addRule(label, d, alabel);
 					module.addRule(alabel, ERROR, alabel);
 					i += 3;
@@ -385,7 +386,7 @@ public class MethodTranslator implements ModuleMaker {
 		int depth = (d.type == ExprType.ARRAYLOAD) ? 1 : 2;
 		npe(label, depth);
 		
-		String error = TranslatorUtils.formatIoobName(label);
+		String error = LabelUtils.formatIoobName(label);
 		module.addSharedRule(label, 
 				new ExprSemiring(IOOB, new ExprSemiring.Npe(depth)), 
 				error);
@@ -777,7 +778,7 @@ public class MethodTranslator implements ModuleMaker {
 				nextlabel);
 		
 		// False branch
-		String alabel = TranslatorUtils.formatAssertionName(badlabel);
+		String alabel = LabelUtils.formatAssertionName(badlabel);
 		module.addRule(badlabel, 
 				new ExprSemiring(IF, new If(falsebranch)), 
 				alabel);
@@ -1001,7 +1002,7 @@ public class MethodTranslator implements ModuleMaker {
 	}
 	
 	private void heapoverflow(String label, ExprType type, Object value) {
-		String holabel = TranslatorUtils.formatHeapOverflowName(label);
+		String holabel = LabelUtils.formatHeapOverflowName(label);
 		module.addSharedRule(label, 
 				new ExprSemiring(HEAPOVERFLOW, type, value), 
 				holabel);
@@ -1010,7 +1011,7 @@ public class MethodTranslator implements ModuleMaker {
 	
 	private void npe(String label, int depth) {
 		
-		String npelabel = TranslatorUtils.formatNpeName(label);
+		String npelabel = LabelUtils.formatNpeName(label);
 		module.addSharedRule(label, 
 				new ExprSemiring(NPE, new ExprSemiring.Npe(depth)), 
 				npelabel);
