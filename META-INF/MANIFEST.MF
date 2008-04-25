@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jmoped Plug-in
+Bundle-SymbolicName: de.tum.in.jmoped;singleton:=true
+Bundle-Version: 2.0.0
+Bundle-Activator: de.tum.in.jmoped.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.debug.ui,
+ org.eclipse.jdt.launching,
+ org.eclipse.jface.text,
+ org.eclipse.jdt.core,
+ org.eclipse.ui.ide,
+ org.eclipse.jdt.ui,
+ org.eclipse.core.filebuffers,
+ org.eclipse.ui.editors
+Eclipse-LazyStart: true
+Bundle-ClassPath: lib/jclasslib.jar,
+ lib/wpds.jar,
+ bin/,
+ lib/javabdd-2.0.jar
