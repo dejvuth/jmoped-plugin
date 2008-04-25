@@ -12,7 +12,6 @@ import net.sf.javabdd.BDDFactory;
 import net.sf.javabdd.BDDPairing;
 import net.sf.javabdd.BDDVarSet;
 import net.sf.javabdd.BDD.BDDIterator;
-import de.tum.in.jmoped.translator.TranslatorUtils;
 import de.tum.in.jmoped.underbone.ExprSemiring.ArithType;
 import de.tum.in.jmoped.underbone.ExprSemiring.Condition;
 import de.tum.in.jmoped.underbone.ExprSemiring.DupType;
@@ -1684,9 +1683,9 @@ public class BDDSemiring implements Semiring {
 		doms[0] = manager.getStackDomain(sp - 1);
 		for (int i = 1; i <= manager.getThreadBound(); i++) {
 			doms[2*i - 1] = manager.getGlobalVarDomain(
-					TranslatorUtils.formatWaitFor(i));
+					LabelUtils.formatWaitFor(i));
 			doms[2*i] = manager.getGlobalVarDomain(
-					TranslatorUtils.formatWaitFlag(i));
+					LabelUtils.formatWaitFlag(i));
 		}
 		BDDIterator itr = manager.iterator(bdd, doms);
 		
@@ -1909,11 +1908,11 @@ public class BDDSemiring implements Semiring {
 		// Gets domains for save,, waitfor
 		int tid = DpnSat.getCurrentThreadId();
 		BDDDomain savedom = manager.getGlobalVarDomain(
-				TranslatorUtils.formatSave(tid));
+				LabelUtils.formatSave(tid));
 		BDDDomain waitflagdom = manager.getGlobalVarDomain(
-				TranslatorUtils.formatWaitFlag(tid));
+				LabelUtils.formatWaitFlag(tid));
 		BDDDomain waitfordom = manager.getGlobalVarDomain(
-				TranslatorUtils.formatWaitFor(tid));
+				LabelUtils.formatWaitFor(tid));
 		
 		// Gets all possible s0 values
 		BDDDomain spdom = manager.getStackPointerDomain();
@@ -1957,11 +1956,11 @@ public class BDDSemiring implements Semiring {
 		
 		int tid = DpnSat.getCurrentThreadId();
 		BDDDomain savedom = manager.getGlobalVarDomain(
-				TranslatorUtils.formatSave(tid));
+				LabelUtils.formatSave(tid));
 		BDDDomain waitflagdom = manager.getGlobalVarDomain(
-				TranslatorUtils.formatWaitFlag(tid));
+				LabelUtils.formatWaitFlag(tid));
 		BDDDomain waitfordom = manager.getGlobalVarDomain(
-				TranslatorUtils.formatWaitFor(tid));
+				LabelUtils.formatWaitFor(tid));
 		BDDIterator itr = manager.iterator(bdd, 
 				new BDDDomain[] { savedom, waitflagdom, waitfordom });
 		

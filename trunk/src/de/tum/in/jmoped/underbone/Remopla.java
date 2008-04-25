@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import net.sf.javabdd.BDD;
 
-import de.tum.in.jmoped.translator.TranslatorUtils;
 import de.tum.in.wpds.Dpn;
 import de.tum.in.wpds.DpnReach;
 import de.tum.in.wpds.DpnSat;
@@ -188,7 +187,7 @@ public class Remopla {
 	String getLastCalledName() {
 		
 		String[] names = getModule(init).getCalledNames();
-		return TranslatorUtils.trimOffset(names[names.length - 1]);
+		return LabelUtils.trimOffset(names[names.length - 1]);
 	}
 	
 	/**
@@ -245,7 +244,7 @@ public class Remopla {
 		
 		Set<String> labels = getLabels();
 		for (String label : labels) {
-			if (!(TranslatorUtils.isAssertionName(label)))
+			if (!(LabelUtils.isAssertionName(label)))
 				continue;
 			
 			if (post.reachable(label)) {

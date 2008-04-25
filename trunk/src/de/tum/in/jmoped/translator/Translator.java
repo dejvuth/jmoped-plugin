@@ -24,6 +24,7 @@ import org.gjt.jclasslib.structures.MethodInfo;
 import org.gjt.jclasslib.structures.attributes.CodeAttribute;
 
 import de.tum.in.jmoped.translator.stub.StubManager;
+import de.tum.in.jmoped.underbone.LabelUtils;
 import de.tum.in.jmoped.underbone.Module;
 import de.tum.in.jmoped.underbone.RawArgument;
 import de.tum.in.jmoped.underbone.Remopla;
@@ -240,9 +241,9 @@ public class Translator {
 		// Adds aux variables in case of multithreading
 		if (multithreading()) {
 			for (int i = 1; i <= tbound; i++) {
-				gv.add(new Variable(INT, TranslatorUtils.formatSave(i), bits, true));
-				gv.add(new Variable(BOOLEAN, TranslatorUtils.formatWaitFlag(i), 0, true));
-				gv.add(new Variable(INT, TranslatorUtils.formatWaitFor(i), 0, true));
+				gv.add(new Variable(INT, LabelUtils.formatSave(i), bits, true));
+				gv.add(new Variable(BOOLEAN, LabelUtils.formatWaitFlag(i), 0, true));
+				gv.add(new Variable(INT, LabelUtils.formatWaitFor(i), 0, true));
 			}
 		}
 		
@@ -283,10 +284,10 @@ public class Translator {
 	public int getSourceLine(String label) {
 		
 		ClassTranslator coll = included.get(TranslatorUtils.extractClassName(label));
-		ModuleMaker module = coll.getModuleMaker(TranslatorUtils.trimOffset(label));
+		ModuleMaker module = coll.getModuleMaker(LabelUtils.trimOffset(label));
 		if (!(module instanceof MethodTranslator))
 			return -1;
-		return ((MethodTranslator) module).getSourceLine(TranslatorUtils.getOffset(label));
+		return ((MethodTranslator) module).getSourceLine(LabelUtils.getOffset(label));
 	}
 	
 	/**
@@ -638,7 +639,7 @@ public class Translator {
 			
 			// Includes all classes in parameters
 			log("\tmethod: %s%s%n", methods[i].getName(), methods[i].getDescriptor());
-			List<String> params = TranslatorUtils.getParamTypes(methods[i].getDescriptor());
+			List<String> params = LabelUtils.getParamTypes(methods[i].getDescriptor());
 			for (String param : params) {
 				if (param.startsWith("[")) {
 					includeAllReachableClasses(param);

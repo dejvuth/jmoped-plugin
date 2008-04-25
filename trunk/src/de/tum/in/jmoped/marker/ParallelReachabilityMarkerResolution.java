@@ -7,6 +7,7 @@ import org.eclipse.ui.IMarkerResolution2;
 import de.tum.in.jmoped.Activator;
 import de.tum.in.jmoped.CoverageLaunchShortcut;
 import de.tum.in.jmoped.translator.TranslatorUtils;
+import de.tum.in.jmoped.underbone.LabelUtils;
 import de.tum.in.jmoped.underbone.Remopla;
 
 public class ParallelReachabilityMarkerResolution implements IMarkerResolution2 {
@@ -41,9 +42,9 @@ public class ParallelReachabilityMarkerResolution implements IMarkerResolution2 
 		Activator.info(title, 
 				String.format(msg, 
 						amarker.getAttribute(IMarker.LINE_NUMBER, 0),
-						TranslatorUtils.trimOffset(a),
+						LabelUtils.trimOffset(a),
 						marker.getAttribute(IMarker.LINE_NUMBER, 0),
-						TranslatorUtils.trimOffset(b)));
+						LabelUtils.trimOffset(b)));
 	}
 
 }

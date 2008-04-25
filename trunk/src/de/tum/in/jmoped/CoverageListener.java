@@ -15,6 +15,7 @@ import org.gjt.jclasslib.structures.attributes.SourceFileAttribute;
 import de.tum.in.jmoped.marker.MarkerManager;
 import de.tum.in.jmoped.translator.Translator;
 import de.tum.in.jmoped.translator.TranslatorUtils;
+import de.tum.in.jmoped.underbone.LabelUtils;
 import de.tum.in.jmoped.underbone.ProgressMonitor;
 import de.tum.in.jmoped.underbone.RemoplaListener;
 
@@ -259,7 +260,7 @@ public class CoverageListener implements RemoplaListener {
 		}
 		
 		// In case of assertion label
-		if (TranslatorUtils.isAssertionName(label)) {
+		if (LabelUtils.isAssertionName(label)) {
 			
 			// Bypasses if already marked as assertion failed
 			if (minfo.isMarkedAsAssertionFailed(line)) return;
@@ -279,7 +280,7 @@ public class CoverageListener implements RemoplaListener {
 		}
 		
 		// In case of NPE label
-		if (TranslatorUtils.isNpeName(label)) {
+		if (LabelUtils.isNpeName(label)) {
 			
 			// Bypasses if already marked as npe
 			if (minfo.isMarkedAsNpe(line)) return;
@@ -298,7 +299,7 @@ public class CoverageListener implements RemoplaListener {
 			return;
 		}
 		
-		if (TranslatorUtils.isIoobName(label)) {
+		if (LabelUtils.isIoobName(label)) {
 			
 			// Bypasses if already marked as npe
 			if (minfo.isMarkedAsIoob(line)) return;
@@ -317,7 +318,7 @@ public class CoverageListener implements RemoplaListener {
 			return;
 		}
 		
-		if (TranslatorUtils.isHeapOverflowName(label)) {
+		if (LabelUtils.isHeapOverflowName(label)) {
 			
 			// Bypasses if already marked as npe
 			if (minfo.isMarkedAsHeapOverflowed(line)) return;
