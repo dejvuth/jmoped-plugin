@@ -119,6 +119,8 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 		System.gc();
 	}
 	
+	private static final String TRANSLATOR_JAR = "jmoped-translator.jar";
+	
 	/**
 	 * Launches the analysis.
 	 */
@@ -142,7 +144,7 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			String className = method.getDeclaringType().getFullyQualifiedName().replace('.', '/');
 			URL liburl = FileLocator.find(
 					Platform.getBundle(Activator.PLUGIN_ID), 
-					new Path("lib" + File.separator + "translator.jar"), null);
+					new Path("lib" + File.separator + TRANSLATOR_JAR), null);
 			translator = new Translator(
 					className,
 					new String[] { location, location + "/bin", FileLocator.resolve(liburl).toURI().getRawPath() },

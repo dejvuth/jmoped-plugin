@@ -17,8 +17,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors
 Eclipse-LazyStart: true
 Bundle-ClassPath: lib/jclasslib.jar,
- lib/wpds.jar,
  bin/,
  lib/javabdd-2.0.jar,
- lib/translator.jar,
- lib/underbone.jar
+ lib/underbone.jar,
+ lib/jwpds.jar,
+ lib/jmoped-translator.jar
