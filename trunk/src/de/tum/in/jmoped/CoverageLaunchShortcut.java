@@ -1,6 +1,7 @@
 package de.tum.in.jmoped;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -141,13 +142,16 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			String location = project.getResource().getLocation().toOSString();
 			
 			// Creates translator
-			String className = method.getDeclaringType().getFullyQualifiedName().replace('.', '/');
+			String className = method.getDeclaringType().getFullyQualifiedName()
+					.replace('.', '/');
 			URL liburl = FileLocator.find(
 					Platform.getBundle(Activator.PLUGIN_ID), 
 					new Path("lib" + File.separator + TRANSLATOR_JAR), null);
+			File libfile = new File(new URI(FileLocator.resolve(liburl)
+					.toString().replaceAll(" ", "%20")));
 			translator = new Translator(
 					className,
-					new String[] { location, location + "/bin", FileLocator.resolve(liburl).toURI().getRawPath() },
+					new String[] { location, location + "/bin", libfile.getAbsolutePath() },
 					method.isConstructor() ? "<init>" : method.getElementName(),
 					method.getSignature());
 			
