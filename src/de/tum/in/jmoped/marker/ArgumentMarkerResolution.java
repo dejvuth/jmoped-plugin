@@ -38,12 +38,15 @@ public class ArgumentMarkerResolution implements IMarkerResolution2 {
 		Translator translator = CoverageLaunchShortcut.getLastTranslator();
 		MethodArgument[] args = translator.getMethodArguments(
 				remopla.getRawArguments2(label), remopla.getFloats());
+		Activator.info("Method arguments found", 
+				"Total: " + args.length + " arguments.");
 		ProgressView view = Activator.findProgressView();
 		view.setArguments(args);
 	}
 
 	public enum Type {
 		ASSERT("AssertionError", "assertion.png"),
+		COVERED("program point", "covered.png"),
 		IOOB("ArrayIndexOutOfBoundException", "ioob.png"),
 		NPE("NullPointerException", "npe.png");
 		

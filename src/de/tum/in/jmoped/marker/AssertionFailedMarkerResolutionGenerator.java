@@ -13,7 +13,9 @@ public class AssertionFailedMarkerResolutionGenerator implements
 
 	public IMarkerResolution[] getResolutions(IMarker marker) {
 		return new IMarkerResolution[] { 
-				new ArgumentMarkerResolution(ArgumentMarkerResolution.Type.ASSERT) };
+			new ArgumentMarkerResolution(ArgumentMarkerResolution.Type.ASSERT)/*,
+			new CounterMarkerResolution(CounterMarkerResolution.Type.ASSERT)*/
+		};
 	}
 
 }
