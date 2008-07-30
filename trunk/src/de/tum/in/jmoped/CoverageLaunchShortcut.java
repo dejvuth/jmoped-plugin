@@ -133,10 +133,10 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			
 			// Reads preferences
 			IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
-			int verbose = pref.getInt(Preference.VERBOSITY);
-			Sat.setVerbosity(verbose);
-			Translator.setVerbosity(verbose);
-			Remopla.setVerbosity(verbose);
+			verbosity = pref.getInt(Preference.VERBOSITY);
+			Sat.setVerbosity(verbosity);
+			Translator.setVerbosity(verbosity);
+			Remopla.setVerbosity(verbosity);
 			
 			IJavaProject project = method.getJavaProject();
 			String location = project.getResource().getLocation().toOSString();
@@ -162,9 +162,13 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			// Creates Remopla
 			final boolean executeRemopla = config.executeRemopla();
 			final int threadBound = config.getThreadBound();
+			final int contextBound = config.getContextSwitchBound();
 			remopla = translator.translate(config.getBits(), 
 					config.getHeapSize(), !executeRemopla, threadBound, config.symbolic());
-			log("Bits: %d, Heap Size: %d%n", config.getBits(), config.getHeapSize());
+			info("Bits: %d, Heap Size: %d, Thread Bound: %d, " +
+					"Context Bound: %d, Execute: %s, Lazy: %s%n", 
+					config.getBits(), config.getHeapSize(), threadBound, 
+					contextBound, executeRemopla, config.symbolic());
 			log(remopla.toString().replace("%", "%%"));
 			
 			// Creates coverage listener
@@ -178,13 +182,12 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			final ProgressMonitor monitor = view.getProgressMonitor();
 			
 			// Runs the analysis
-			final int contextSwitchBound = config.getContextSwitchBound();
 			CoverageRunner r = new CoverageRunner(
 					pref.getString(Preference.BDDPACKAGE),
 					pref.getInt(Preference.NODENUM),
 					pref.getInt(Preference.CACHESIZE),
 					executeRemopla, threadBound,
-					contextSwitchBound, config.symbolic(), monitor);
+					contextBound, config.symbolic(), monitor);
 			Thread t = new Thread(r);
 			t.start();
 			

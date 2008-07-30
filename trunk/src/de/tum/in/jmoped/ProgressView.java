@@ -311,7 +311,7 @@ public class ProgressView extends ViewPart {
 					}
 					CoverageLaunchShortcut.info("Max BDD: %.2f * 10^3 nodes%n", 
 							((float) VarManager.getMaxNodeNum())/1000.0);
-					CoverageLaunchShortcut.info("Time: %.2fs%n", elapsed);
+					CoverageLaunchShortcut.info("Time: %.2fs%n%n", elapsed);
 					rerunAction.setEnabled(true);
 					stopAction.setEnabled(false);
 				}

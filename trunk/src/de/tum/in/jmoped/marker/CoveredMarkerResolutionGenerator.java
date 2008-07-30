@@ -12,12 +12,16 @@ public class CoveredMarkerResolutionGenerator implements
 	}
 
 	public IMarkerResolution[] getResolutions(IMarker marker) {
-		if (AddLabelMarkerResolution.added == null)
-			return new IMarkerResolution[] { new AddLabelMarkerResolution() };
+//		if (AddLabelMarkerResolution.added == null)
+//			return new IMarkerResolution[] { new AddLabelMarkerResolution() };
+//		
+//		return new IMarkerResolution[] { 
+//				new AddLabelMarkerResolution(),
+//				new ParallelReachabilityMarkerResolution() };
 		
 		return new IMarkerResolution[] { 
-				new AddLabelMarkerResolution(),
-				new ParallelReachabilityMarkerResolution() };
+				new ArgumentMarkerResolution(ArgumentMarkerResolution.Type.COVERED)
+			};
 	}
 
 }
