@@ -38,6 +38,10 @@ public class ArgumentMarkerResolution implements IMarkerResolution2 {
 		Translator translator = CoverageLaunchShortcut.getLastTranslator();
 		MethodArgument[] args = translator.getMethodArguments(
 				remopla.getRawArguments2(label), remopla.getFloats());
+		if (args == null) {
+			Activator.info("No method arguments found", "Operation not supported");
+			return;
+		}
 		Activator.info("Method arguments found", 
 				"Total: " + args.length + " arguments.");
 		ProgressView view = Activator.findProgressView();
