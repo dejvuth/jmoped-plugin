@@ -3,6 +3,7 @@ package de.tum.in.jmoped;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IFile;
@@ -17,6 +18,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.ui.ILaunchShortcut;
+import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -138,10 +140,21 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			Translator.setVerbosity(verbosity);
 			Remopla.setVerbosity(verbosity);
 			
+			// Adds default location to search paths
+			ArrayList<String> searchPaths = new ArrayList<String>();
 			IJavaProject project = method.getJavaProject();
 			String location = project.getResource().getLocation().toOSString();
+			searchPaths.add(location);
+			searchPaths.add(location + "/bin");
 			
-			// Creates translator
+			// Adds project's library to search paths
+			IClasspathEntry[] cp = project.getRawClasspath();
+			for (int i = 0; i < cp.length; i++) {
+				if (cp[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY)
+					searchPaths.add(cp[i].getPath().toOSString());
+			}
+			
+			// Adds TRANSLATOR_JAR to search paths
 			String className = method.getDeclaringType().getFullyQualifiedName()
 					.replace('.', '/');
 			URL liburl = FileLocator.find(
@@ -149,9 +162,12 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 					new Path("lib" + File.separator + TRANSLATOR_JAR), null);
 			File libfile = new File(new URI(FileLocator.resolve(liburl)
 					.toString().replaceAll(" ", "%20")));
+			searchPaths.add(libfile.getAbsolutePath());
+
+			// Creates translator
 			translator = new Translator(
 					className,
-					new String[] { location, location + "/bin", libfile.getAbsolutePath() },
+					searchPaths.toArray(new String[searchPaths.size()]),
 					method.isConstructor() ? "<init>" : method.getElementName(),
 					method.getSignature());
 			
