@@ -90,7 +90,7 @@ public class ProgressView extends ViewPart {
 	static final String EXECUTE_REMOPLA = NAME + ".EXECUTE_REMOPLA";
 	static final String THREAD_BOUND = NAME + ".THREAD_BOUND";
 	static final String CONTEXT_SWITCH_BOUND = NAME + ".CONTEXT_SWTICH_BOUND";
-	static final String SYMBOLIC = NAME + ".SYMBOLIC";
+	static final String LAZY = NAME + ".LAZY";
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -150,7 +150,7 @@ public class ProgressView extends ViewPart {
 			memento.putInteger(EXECUTE_REMOPLA, config.executeRemopla() ? 1 : 0);
 			memento.putInteger(THREAD_BOUND, config.getThreadBound());
 			memento.putInteger(CONTEXT_SWITCH_BOUND, config.getContextSwitchBound());
-			memento.putInteger(SYMBOLIC, config.symbolic() ? 1 : 0);
+			memento.putInteger(LAZY, config.lazy() ? 1 : 0);
 		}
 		
 		super.saveState(memento);

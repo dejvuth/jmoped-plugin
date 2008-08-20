@@ -25,7 +25,7 @@ public class ConfigComposite extends Composite {
 	private Spinner threadBoundSpinner;
 	private Spinner contextSwitchBoundSpinner;
 	
-	private Button symbolicCheckbox;
+	private Button lazyCheckbox;
 	private Button executeRemoplaCheckbox;
 
 	public ConfigComposite(Composite parent, int style, IMemento memento) {
@@ -79,17 +79,17 @@ public class ConfigComposite extends Composite {
 		contextSwitchBoundSpinner.setLayoutData(new GridData(40, SWT.DEFAULT));
 		contextSwitchBoundSpinner.setEnabled(threadBoundSpinner.getSelection() > 1);
 		
-		// Checkbox: Symbolic
-		symbolicCheckbox = createCheckbox(this, memento, 
-				"Lazy splitting", ProgressView.SYMBOLIC, false);
-		symbolicCheckbox.setEnabled(threadBoundSpinner.getSelection() > 1);
+		// Checkbox: Lazy
+		lazyCheckbox = createCheckbox(this, memento, 
+				"Lazy splitting", ProgressView.LAZY, false);
+		lazyCheckbox.setEnabled(threadBoundSpinner.getSelection() > 1);
 		
 		threadBoundSpinner.addModifyListener(new ModifyListener() {
 
 			public void modifyText(ModifyEvent e) {
 				boolean multithreading = multithreading() ? true : false;
 				contextSwitchBoundSpinner.setEnabled(multithreading);
-				symbolicCheckbox.setEnabled(multithreading);
+				lazyCheckbox.setEnabled(multithreading);
 			}
 			
 		});
@@ -109,7 +109,7 @@ public class ConfigComposite extends Composite {
 				heapSizeSpinner.setEnabled(enabled);
 				threadBoundSpinner.setEnabled(enabled);
 				contextSwitchBoundSpinner.setEnabled(enabled && multithreading());
-				symbolicCheckbox.setEnabled(enabled && multithreading());
+				lazyCheckbox.setEnabled(enabled && multithreading());
 			}
 		});
 		
@@ -117,7 +117,7 @@ public class ConfigComposite extends Composite {
 			heapSizeSpinner.setEnabled(false);
 			threadBoundSpinner.setEnabled(false);
 			contextSwitchBoundSpinner.setEnabled(false);
-			symbolicCheckbox.setEnabled(false);
+			lazyCheckbox.setEnabled(false);
 		}
 	}
 	
@@ -159,8 +159,8 @@ public class ConfigComposite extends Composite {
 		return contextSwitchBoundSpinner.getSelection();
 	}
 	
-	public boolean symbolic() {
-		return symbolicCheckbox.getSelection();
+	public boolean lazy() {
+		return lazyCheckbox.getSelection();
 	}
 	
 	private static Button createCheckbox(Composite parent, IMemento memento,
