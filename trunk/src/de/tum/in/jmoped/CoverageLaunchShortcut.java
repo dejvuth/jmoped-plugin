@@ -180,11 +180,13 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			final int threadBound = config.getThreadBound();
 			final int contextBound = config.getContextSwitchBound();
 			remopla = translator.translate(config.getBits(), 
-					config.getHeapSize(), !executeRemopla, threadBound, config.symbolic());
+					config.getHeapSize(), !executeRemopla, 
+					(executeRemopla) ? 1 : threadBound, 
+					(executeRemopla) ? false : config.lazy());
 			info("Bits: %d, Heap Size: %d, Thread Bound: %d, " +
 					"Context Bound: %d, Execute: %s, Lazy: %s%n", 
 					config.getBits(), config.getHeapSize(), threadBound, 
-					contextBound, executeRemopla, config.symbolic());
+					contextBound, executeRemopla, config.lazy());
 			log(remopla.toString().replace("%", "%%"));
 			
 			// Creates coverage listener
@@ -203,7 +205,7 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 					pref.getInt(Preference.NODENUM),
 					pref.getInt(Preference.CACHESIZE),
 					executeRemopla, threadBound,
-					contextBound, config.symbolic(), monitor);
+					contextBound, config.lazy(), monitor);
 			Thread t = new Thread(r);
 			t.start();
 			
@@ -273,6 +275,11 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 		ISelection selection = editor.getSite().getPage().getSelection();
 		if (selection instanceof ITextSelection) {
 			method = SearchUtils.getMethod(editor, (ITextSelection) selection);
+			if (method == null) {
+				MessageDialog.openError(null, "No method found", 
+						"Please select a method where jMoped should start.");
+				return;
+			}
 			launch();
 		} else {
 			System.err.println("Unsupported implementation: selection not instanceof ITextSelection");
