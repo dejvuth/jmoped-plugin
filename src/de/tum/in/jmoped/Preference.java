@@ -6,6 +6,8 @@ import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -20,12 +22,14 @@ public class Preference
 	implements IWorkbenchPreferencePage{
 
 	private BooleanFieldEditor stopAfterError;
+	private ComboFieldEditor reltype;
 	private ComboFieldEditor bddpackage;
 	private IntegerFieldEditor nodenum;
 	private IntegerFieldEditor cachesize;
 	private ComboFieldEditor verbosity;
 	
 	public static final String STOP_AFTER_ERROR = "stopAfterErrorPreference";
+	public static final String RELTYPE = "reltypePreference";
 	public static final String BDDPACKAGE = "bddpackagePreference";
 	public static final String NODENUM = "nodenumPreference";
 	public static final String CACHESIZE = "cachesizePreference";
@@ -51,9 +55,21 @@ public class Preference
 				getFieldEditorParent());
 		addField(stopAfterError);
 		
+		// Editor: Relation type
+		reltype = new ComboFieldEditor(RELTYPE,
+				"&Relation type:",
+				new String[][] { {"BDDDomain", "bdddomain"}, {"Explicit", "explicit"} },
+				getFieldEditorParent());
+//		reltype.setPropertyChangeListener(new IPropertyChangeListener() {
+//			public void propertyChange(PropertyChangeEvent event) {
+//				bddpackage.setEnabled(false, getFieldEditorParent());
+//			}
+//		});
+		addField(reltype);
+		
 		// Editor: BDD Package
 		bddpackage = new ComboFieldEditor(BDDPACKAGE,
-				"BDD &package:                    ",
+				"&BDD package:                    ",
 				new String[][] { {"Java", "java"}, {"CUDD", "cudd"} },
 				getFieldEditorParent());
 		addField(bddpackage);
@@ -94,6 +110,7 @@ public class Preference
 		public void initializeDefaultPreferences() {
 			IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 			store.setDefault(STOP_AFTER_ERROR, false);
+			store.setDefault(RELTYPE, "bdddomain");
 			store.setDefault(BDDPACKAGE, "cudd");
 			store.setDefault(NODENUM, 1000000);
 			store.setDefault(CACHESIZE, 1000000);

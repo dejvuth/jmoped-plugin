@@ -135,10 +135,10 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			
 			// Reads preferences
 			IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
-			verbosity = pref.getInt(Preference.VERBOSITY);
-			Sat.setVerbosity(verbosity);
-			Translator.setVerbosity(verbosity);
-			Remopla.setVerbosity(verbosity);
+//			verbosity = pref.getInt(Preference.VERBOSITY);
+//			Sat.setVerbosity(verbosity);
+//			Translator.setVerbosity(verbosity);
+//			Remopla.setVerbosity(verbosity);
 			
 			// Adds default location to search paths
 			ArrayList<String> searchPaths = new ArrayList<String>();
@@ -200,10 +200,11 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			final ProgressMonitor monitor = view.getProgressMonitor();
 			
 			// Runs the analysis
-			CoverageRunner r = new CoverageRunner(
-					pref.getString(Preference.BDDPACKAGE),
-					pref.getInt(Preference.NODENUM),
-					pref.getInt(Preference.CACHESIZE),
+			CoverageRunner r = new CoverageRunner(pref,
+//					pref.getString(Preference.RELTYPE),
+//					pref.getString(Preference.BDDPACKAGE),
+//					pref.getInt(Preference.NODENUM),
+//					pref.getInt(Preference.CACHESIZE),
 					executeRemopla, threadBound,
 					contextBound, config.lazy(), monitor);
 			Thread t = new Thread(r);
@@ -216,38 +217,55 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 	
 	private static class CoverageRunner implements Runnable {
 		
-		String bddpackage;
-		int nodenum;
-		int cachesize;
+//		String reltype;
+//		String bddpackage;
+//		int nodenum;
+//		int cachesize;
+		IPreferenceStore pref;
 		boolean executeRemopla;
 		int threadBound;
 		int contextSwitchBound;
-		boolean symbolic;
+		boolean lazy;
 		ProgressMonitor monitor;
 		
-		public CoverageRunner(String bddpackage, int nodenum, int cachesize, 
+		public CoverageRunner(IPreferenceStore pref,/*String reltype,
+				String bddpackage, int nodenum, int cachesize, */
 				boolean executeRemopla, int threadBound, 
-				int contextSwitchBound, boolean symbolic, ProgressMonitor monitor) {
-			this.bddpackage = bddpackage;
-			this.nodenum = nodenum;
-			this.cachesize = cachesize;
+				int contextSwitchBound, boolean lazy, ProgressMonitor monitor) {
+			this.pref = pref;
+//			this.reltype = reltype;
+//			this.bddpackage = bddpackage;
+//			this.nodenum = nodenum;
+//			this.cachesize = cachesize;
 			this.executeRemopla = executeRemopla;
 			this.threadBound = threadBound;
 			this.contextSwitchBound = contextSwitchBound;
-			this.symbolic = symbolic;
+			this.lazy = lazy;
 			this.monitor = monitor;
 		}
 		
 		public void run() {
+			verbosity = pref.getInt(Preference.VERBOSITY);
+			Sat.setVerbosity(verbosity);
+			Translator.setVerbosity(verbosity);
+			Remopla.setVerbosity(verbosity);
 			try {
 				long startTime = System.nanoTime();
+				Remopla.Coverage coverage;
 				if (executeRemopla)
-					remopla.run(monitor);
-				else if (threadBound == 1)
-					remopla.coverage(bddpackage, nodenum, cachesize, monitor);
+					coverage = new Remopla.ExecuteCoverage();
 				else {
-					remopla.coverage(bddpackage, nodenum, cachesize, threadBound, contextSwitchBound, symbolic, monitor);
+					if (pref.getString(Preference.RELTYPE).equals("bdddomain"))
+						coverage = new Remopla.BDDDomainCoverage(threadBound, 
+							contextSwitchBound, lazy, 
+							pref.getString(Preference.BDDPACKAGE), 
+							pref.getInt(Preference.NODENUM), 
+							pref.getInt(Preference.CACHESIZE));
+					else	// explicit
+						coverage = new Remopla.ExplicitCoverage(threadBound, 
+							contextSwitchBound, lazy);
 				}
+				remopla.coverage(coverage, monitor);
 				long estimatedTime = System.nanoTime() - startTime;
 				double time = ((double) estimatedTime) / Math.pow(10, 9);
 				log("Time: %.2f seconds%n", time);
@@ -308,6 +326,7 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 	}
 	
 	private static void log(int threshold, String msg, Object... args) {
+		if (logger == null) return;
 		if (verbosity >= threshold)
 			logger.fine(String.format(msg, args));
 	}
