@@ -20,7 +20,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import de.tum.in.jmoped.translator.MethodArgument;
 import de.tum.in.jmoped.underbone.ProgressMonitor;
-import de.tum.in.jmoped.underbone.VarManager;
+import de.tum.in.jmoped.underbone.BDDManager;
 
 /**
  * The jMoped's progress view.
@@ -310,7 +310,7 @@ public class ProgressView extends ViewPart {
 						progressBar.setSelection(progressBar.getMaximum());
 					}
 					CoverageLaunchShortcut.info("Max BDD: %.2f * 10^3 nodes%n", 
-							((float) VarManager.getMaxNodeNum())/1000.0);
+							((float) BDDManager.getMaxNodeNum())/1000.0);
 					CoverageLaunchShortcut.info("Time: %.2fs%n%n", elapsed);
 					rerunAction.setEnabled(true);
 					stopAction.setEnabled(false);
