@@ -135,10 +135,10 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			
 			// Reads preferences
 			IPreferenceStore pref = Activator.getDefault().getPreferenceStore();
-//			verbosity = pref.getInt(Preference.VERBOSITY);
-//			Sat.setVerbosity(verbosity);
-//			Translator.setVerbosity(verbosity);
-//			Remopla.setVerbosity(verbosity);
+			verbosity = pref.getInt(Preference.VERBOSITY);
+			Sat.setVerbosity(verbosity);
+			Translator.setVerbosity(verbosity);
+			Remopla.setVerbosity(verbosity);
 			
 			// Adds default location to search paths
 			ArrayList<String> searchPaths = new ArrayList<String>();
@@ -245,10 +245,10 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 		}
 		
 		public void run() {
-			verbosity = pref.getInt(Preference.VERBOSITY);
-			Sat.setVerbosity(verbosity);
-			Translator.setVerbosity(verbosity);
-			Remopla.setVerbosity(verbosity);
+//			verbosity = pref.getInt(Preference.VERBOSITY);
+//			Sat.setVerbosity(verbosity);
+//			Translator.setVerbosity(verbosity);
+//			Remopla.setVerbosity(verbosity);
 			try {
 				long startTime = System.nanoTime();
 				Remopla.Coverage coverage;
