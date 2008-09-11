@@ -201,10 +201,6 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			
 			// Runs the analysis
 			CoverageRunner r = new CoverageRunner(pref,
-//					pref.getString(Preference.RELTYPE),
-//					pref.getString(Preference.BDDPACKAGE),
-//					pref.getInt(Preference.NODENUM),
-//					pref.getInt(Preference.CACHESIZE),
 					executeRemopla, threadBound,
 					contextBound, config.lazy(), monitor);
 			Thread t = new Thread(r);
@@ -217,10 +213,6 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 	
 	private static class CoverageRunner implements Runnable {
 		
-//		String reltype;
-//		String bddpackage;
-//		int nodenum;
-//		int cachesize;
 		IPreferenceStore pref;
 		boolean executeRemopla;
 		int threadBound;
@@ -228,15 +220,10 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 		boolean lazy;
 		ProgressMonitor monitor;
 		
-		public CoverageRunner(IPreferenceStore pref,/*String reltype,
-				String bddpackage, int nodenum, int cachesize, */
+		public CoverageRunner(IPreferenceStore pref,
 				boolean executeRemopla, int threadBound, 
 				int contextSwitchBound, boolean lazy, ProgressMonitor monitor) {
 			this.pref = pref;
-//			this.reltype = reltype;
-//			this.bddpackage = bddpackage;
-//			this.nodenum = nodenum;
-//			this.cachesize = cachesize;
 			this.executeRemopla = executeRemopla;
 			this.threadBound = threadBound;
 			this.contextSwitchBound = contextSwitchBound;
@@ -245,10 +232,6 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 		}
 		
 		public void run() {
-//			verbosity = pref.getInt(Preference.VERBOSITY);
-//			Sat.setVerbosity(verbosity);
-//			Translator.setVerbosity(verbosity);
-//			Remopla.setVerbosity(verbosity);
 			try {
 				long startTime = System.nanoTime();
 				Remopla.Coverage coverage;
