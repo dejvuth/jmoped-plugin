@@ -169,21 +169,25 @@ public class CoverageListener implements RemoplaListener {
 			// Tries finding source file name from the class file
 			log("Resouce for %s not found%n", className);
 			ClassFile cf = translator.getClassTranslator(className).getClassFile();
-			SourceFileAttribute attr = (SourceFileAttribute) cf.findAttribute(SourceFileAttribute.class);
-			if (attr != null) {
-				String source = cf.getConstantPoolUtf8Entry(attr.getSourcefileIndex())
-						.getString();
-				log("Source attribute found: %s%n", source);
-				String sourceClassName = source.substring(0, source.length() - 5);
-				log("Trying with %s%n", sourceClassName);
-				resource = SearchUtils.findResource(sourceClassName);
-				
-				// Guesses once more
-				if (resource == null) {
-					sourceClassName = className.substring(0, className.lastIndexOf('/')) 
-							+ '/' + sourceClassName;
+			if (cf == null) {
+				log("Classfile for %s not found%n", className);
+			} else {
+				SourceFileAttribute attr = (SourceFileAttribute) cf.findAttribute(SourceFileAttribute.class);
+				if (attr != null) {
+					String source = cf.getConstantPoolUtf8Entry(attr.getSourcefileIndex())
+							.getString();
+					log("Source attribute found: %s%n", source);
+					String sourceClassName = source.substring(0, source.length() - 5);
 					log("Trying with %s%n", sourceClassName);
 					resource = SearchUtils.findResource(sourceClassName);
+					
+					// Guesses once more
+					if (resource == null) {
+						sourceClassName = className.substring(0, className.lastIndexOf('/')) 
+								+ '/' + sourceClassName;
+						log("Trying with %s%n", sourceClassName);
+						resource = SearchUtils.findResource(sourceClassName);
+					}
 				}
 			}
 			if (resource == null)
