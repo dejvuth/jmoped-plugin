@@ -54,7 +54,7 @@ public class ConfigComposite extends Composite {
 		heapSizeSpinner.setLayoutData(new GridData(40, SWT.DEFAULT));
 		
 		// Synchrnizes the spinners
-		new SpinnerSyncListener();
+//		new SpinnerSyncListener();
 		
 		// Thread bound spinner
 		new Label(this, SWT.HORIZONTAL).setText("Thread Bound: ");
