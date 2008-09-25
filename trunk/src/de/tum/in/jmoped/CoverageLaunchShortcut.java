@@ -18,9 +18,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.ui.ILaunchShortcut;
+import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.ITextSelection;
@@ -145,13 +148,24 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			IJavaProject project = method.getJavaProject();
 			String location = project.getResource().getLocation().toOSString();
 			searchPaths.add(location);
-			searchPaths.add(location + "/bin");
+			searchPaths.add(location + File.separator + "bin");
 			
 			// Adds project's library to search paths
 			IClasspathEntry[] cp = project.getRawClasspath();
 			for (int i = 0; i < cp.length; i++) {
 				if (cp[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY)
 					searchPaths.add(cp[i].getPath().toOSString());
+			}
+			
+			// Adds JRE path
+			IClasspathEntry entry = JavaRuntime.getDefaultJREContainerEntry();
+			if (entry != null) {
+				 IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
+				 cp = container.getClasspathEntries();
+				 for (int i = 0; i < cp.length; i++) {
+					if (cp[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY)
+						searchPaths.add(cp[i].getPath().toOSString());
+				}
 			}
 			
 			// Adds TRANSLATOR_JAR to search paths
@@ -187,7 +201,7 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 					"Context Bound: %d, Execute: %s, Lazy: %s%n", 
 					config.getBits(), config.getHeapSize(), threadBound, 
 					contextBound, executeRemopla, config.lazy());
-			log(remopla.toString().replace("%", "%%"));
+			if (debug()) log(remopla.toString().replace("%", "%%"));
 			
 			// Creates coverage listener
 			CoverageListener listener = new CoverageListener(translator, pref.getBoolean(Preference.STOP_AFTER_ERROR));
@@ -306,6 +320,10 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 	 */
 	public static void info(String msg, Object... args) {
 		log(1, msg, args);
+	}
+	
+	public static boolean debug() {
+		return verbosity >= 2;
 	}
 	
 	private static void log(int threshold, String msg, Object... args) {
