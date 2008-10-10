@@ -1,20 +1,39 @@
 <project name="jmoped" basedir="." default="main">
-
+  <!--this must be set according to your eclipse class path.-->
   <property name="eclipse.classpath" value="/Applications/eclipse/plugins/"/>
+  <property name="jmoped-version" value="2.0.2"/>
+  <property name="jar-output-fileprefix" value="de.tum.in.jmoped_${jmoped-version}"/>
+  <!--******************************************************-->
+
+  
+  <!--the locations of the other libs source directories-->
+  <property name="jwpds.dir" value="../jwpds"/>
+  <property name="underbone.dir" value="../underbone"/>
+  <property name="jmoped-translator.dir" value="../jmoped-translator"/>
+
+
   <property name="src.dir"     value="src"/>
   <property name="src-test.dir"     value="test"/>
   <property name="build.dir"   value="build"/>
   <property name="classes.dir" value="${build.dir}/classes"/>
   <property name="classes-tests.dir" value="${build.dir}/classes-tests"/>
   <property name="jar.dir"     value="${build.dir}/jar"/>
+  <property name="jar-tmp.dir" value="jar-tmp"/>
   <property name="lib.dir"     value="lib"/>
   <property name="junit.package"     value="libjunit/junit.jar"/>
+  
+  <!--if the jar file should be executable, a main class must be set here-->
   <property name="main-class"  value=""/>
   <property name="main-class-tests"  value=""/>
-  <property name="jwpds-jar" value="../jwpds/build/jar/jwpds.jar"/>
-  <property name="underbone-jar" value="../underbone/build/jar/underbone.jar"/>
-  <property name="jmoped-translator-jar" value="../jmoped-translator/build/jar/jmoped-translator.jar"/>
-  <property name="native-cudd.dir" value="../underbone/lib/"/>
+
+
+  <property name="jwpds-jar" value="${jwpds.dir}/build/jar/jwpds.jar"/>
+  <property name="underbone-jar" value="${underbone.dir}/build/jar/underbone.jar"/>
+  <property name="jmoped-translator-jar" value="${jmoped-translator.dir}/build/jar/jmoped-translator.jar"/>
+  <property name="jclasslib-jar" value="${lib.dir}/jclasslib.jar"/>
+  <property name="javabdd-jar" value="${underbone.dir}/lib/javabdd-2.0.jar"/>
+  <property name="native-cudd.dir" value="${underbone.dir}/lib/"/>
+  <property name="plugin.xml.file" value="plugin.xml"/>
 
   <path id="classpath">
     <pathelement location="${jwpds-jar}"/>
@@ -35,12 +54,18 @@
     <fileset dir="${lib.dir}" includes="**/*.jar"/>
     <fileset dir="${eclipse.classpath}" includes="**/*.jar"/>
   </path> 
+  
+  <target name="jmoped-translator" description="">
+    <ant dir="${jmoped-translator.dir}" target="jar" inheritAll="false"/>
+  </target>
+
 
   <target name="clean">
     <delete dir="${build.dir}"/>
+    <delete dir="${jar-tmp.dir}"/>
   </target>
 
-  <target name="compile">
+  <target name="compile" depends="jmoped-translator">
     <mkdir dir="${classes.dir}"/>
     <javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" debug="true" excludes="**/*Test.java"/>
     <copy todir="${classes.dir}">
@@ -48,7 +73,7 @@
     </copy> 
   </target>
 
-  <target name="compile-tests">
+  <target name="compile-tests" depends="jmoped-translator">
     <mkdir dir="${classes-tests.dir}"/>
     <javac srcdir="${src-test.dir}" destdir="${classes-tests.dir}" classpathref="classpath.test" debug="true" includes="**/*Test.java"/>
     <copy todir="${classes-tests.dir}">
@@ -67,9 +92,46 @@
   
   <target name="jar" depends="compile">
     <mkdir dir="${jar.dir}"/>
-    <jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+    <mkdir dir="${jar-tmp.dir}"/>
+    <copy file="${plugin.xml.file}" todir="${jar-tmp.dir}"/>
+    <copy todir="${jar-tmp.dir}/icons">
+            <fileset dir="icons"/>
+    </copy>
+    <copy todir="${jar-tmp.dir}/bin">
+      <fileset dir="${classes.dir}"/>
+    </copy>
+    <copy file="${underbone-jar}" todir="${jar-tmp.dir}/lib"/>
+    <copy file="${jmoped-translator-jar}" todir="${jar-tmp.dir}/lib"/>
+    <copy file="${jwpds-jar}" todir="${jar-tmp.dir}/lib"/>
+    <copy file="${javabdd-jar}" todir="${jar-tmp.dir}/lib"/>
+    <copy file="${jclasslib-jar}" todir="${jar-tmp.dir}/lib"/>
+    
+    <jar destfile="${jar.dir}/${jar-output-fileprefix}.jar" basedir="${jar-tmp.dir}">
       <manifest>
-        <attribute name="Main-Class" value="${main-class}"/>
+        <attribute name="Bundle-ManifestVersion" value="2"/>
+        <attribute name="Bundle-Name" value="Jmoped Plug-in"/>
+        <attribute name="Bundle-SymbolicName" value="de.tum.in.jmoped;singleton:=true"/>
+        <attribute name="Bundle-Version" value="${jmoped-version}"/>
+        <attribute name="Bundle-Activator" value="de.tum.in.jmoped.Activator"/>
+        <attribute name="Require-Bundle" value="org.eclipse.ui,
+          org.eclipse.core.runtime,
+          org.eclipse.core.resources,
+          org.eclipse.debug.ui,
+          org.eclipse.jdt.launching,
+          org.eclipse.jface.text,
+          org.eclipse.jdt.core,
+          org.eclipse.ui.ide,
+          org.eclipse.jdt.ui,
+          org.eclipse.core.filebuffers,
+          org.eclipse.ui.editors"/>
+        <attribute name="Eclipse-LazyStart" value="true"/>
+        <attribute name="Bundle-ClassPath" value="lib/jclasslib.jar,
+          lib/jwpds.jar,
+          bin/,
+          lib/,
+          lib/javabdd-2.0.jar,
+          lib/underbone.jar,
+          lib/jmoped-translator.jar"/>
       </manifest>
     </jar>
   </target>
