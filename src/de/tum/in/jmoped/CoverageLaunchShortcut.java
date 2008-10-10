@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IFile;
@@ -174,10 +175,10 @@ public class CoverageLaunchShortcut implements ILaunchShortcut {
 			URL liburl = FileLocator.find(
 					Platform.getBundle(Activator.PLUGIN_ID), 
 					new Path("lib" + File.separator + TRANSLATOR_JAR), null);
-			File libfile = new File(new URI(FileLocator.resolve(liburl)
-					.toString().replaceAll(" ", "%20")));
+      String lpath = FileLocator.toFileURL(liburl).toString().replaceAll(" ", "%20");
+			File libfile = new File(new URI(lpath));
 			searchPaths.add(libfile.getAbsolutePath());
-
+      
 			// Creates translator
 			translator = new Translator(
 					className,
